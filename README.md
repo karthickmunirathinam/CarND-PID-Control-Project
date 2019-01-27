@@ -19,7 +19,7 @@ Self-Driving Car Engineer Nanodegree Program
   * Run either `./install-mac.sh` or `./install-ubuntu.sh`.
   * If you install from source, checkout to commit `e94b6e1`, i.e.
     ```
-    git clone https://github.com/uWebSockets/uWebSockets 
+    git clone https://github.com/uWebSockets/uWebSockets
     cd uWebSockets
     git checkout e94b6e1
     ```
@@ -33,66 +33,65 @@ Fellow students have put together a guide to Windows set-up for the project [her
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./pid`. 
+4. Run it: `./pid`.
 
 Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
 
-## Editor Settings
+### Rubric
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+#### Compilation
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+1. Your code should compile.
 
-## Code Style
+Based on the steps provided above, following output was received for build.
+```
+karthick@karthick-HP-ProBook-430-G5:~/Documents/Udacity/pid_control/CarND-PID-Control-Project/build$ cmake ..
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/karthick/Documents/Udacity/pid_control/CarND-PID-Control-Project/build
+karthick@karthick-HP-ProBook-430-G5:~/Documents/Udacity/pid_control/CarND-PID-Control-Project/build$ make
+Scanning dependencies of target pid
+[ 33%] Building CXX object CMakeFiles/pid.dir/src/main.cpp.o
+/home/karthick/Documents/Udacity/pid_control/CarND-PID-Control-Project/src/main.cpp: In lambda function:
+/home/karthick/Documents/Udacity/pid_control/CarND-PID-Control-Project/src/main.cpp:58:18: warning: unused variable ‘speed’ [-Wunused-variable]
+           double speed = std::stod(j[1]["speed"].get<std::string>());
+                  ^
+/home/karthick/Documents/Udacity/pid_control/CarND-PID-Control-Project/src/main.cpp:59:18: warning: unused variable ‘angle’ [-Wunused-variable]
+           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+                  ^
+[ 66%] Linking CXX executable pid
+[100%] Built target pid
+```
 
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
+#### Implementation
 
-## Project Instructions and Rubric
+1. The PID procedure follows what was taught in the lessons.
 
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
+The modified files are `src/main.cpp`, `src/PID.h` and `src/PID.cpp`
+For ``PID`` features and error calculations implementation is part of `src/PID.cpp`.
+The class is implemented in `src/PID.h`.
+The `src/main.cpp` is modified in the TODO part where the PID parameter initialization and throtle is modified based on the steering value.
 
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/e8235395-22dd-4b87-88e0-d108c5e5bbf4/concepts/6a4d8d42-6a04-4aa6-b284-1697c0fd6562)
-for instructions and the project rubric.
+#### Reflection
 
-## Hints!
+1. Describe the effect each of the P, I, D components had in your implementation.
+-  Proportional portion(Kp) of controller tries to steer the car towards the center line. If the proportional gain is set high the controller overshoots the centre line and starts to oscillate. This can be observed when the car constantly overcorrect and overshoot the middle. If the gain is set too low the controller reacts slowly to the error.
+-  Integral portion(Ki) of controller tries eliminate possible bias and drifts from the center line. Larger gain has led to oscillation.
+-  Differential portion(Kd) of controller tries to reduce the overshoot caused by the proportional component. This a basically a damper, so larger gain leads to slow reduction of cross track error and higher value leads to overshoot and oscillation.
 
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
+2. Describe how the final hyperparameters were chosen.
+-  Parameters were chosen manually with trial and error.
+-  Initially set all the gains Kp, Kv and Ki to zeros. The car now drives in a staright line.
+-  Increase Kp untill the car set to oscillate. Then reduce the Kp value to half of its value.
+-  Now increase the Kd gain so the overshoot of center line had reduced.
+-  Finally set a small value of Ki gain in small steps to reduce the drifts and bias in the turns.
+-  P: 0.25  I: 0.003  D: 3
 
-## Call for IDE Profiles Pull Requests
+3. Effects of Throttle
+-  It was abolutely necessary to control the speed especially during the turns. The the speed of the car is controlled with the throttle parameter. It was switched between 0 and 1. Largeer steering angle (during sharp turns) means lesser throttle. I have tuned the value of multiplying factor so the speed is set within a safe limits in all possible turn angles.
 
-Help your fellow students!
+#### Simulation
 
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
+1. The vehicle must successfully drive a lap around the track.
 
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+   Vehicle has successfully completed lap without going out of the road with set parameters.
