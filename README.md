@@ -84,8 +84,8 @@ The `src/main.cpp` is modified in the TODO part where the PID parameter initiali
 -  Initially set all the gains Kp, Kv and Ki to zeros. The car now drives in a staright line.
 -  Increase Kp untill the car set to oscillate. Then reduce the Kp value to half of its value.
 -  Now increase the Kd gain so the overshoot of center line had reduced.
--  Finally set a small value of Ki gain in small steps to reduce the drifts and bias in the turns.
--  P: 0.25  I: 0.003  D: 3
+-  Finally set a small value of Ki gain in small steps to reduce the drifts and bias in the turns. However Ki set to zero after fine tuning.
+-  P: 0.25  I: 0.000  D: 3
 
 3. Effects of Throttle
 -  It was abolutely necessary to control the speed especially during the turns. The the speed of the car is controlled with the throttle parameter. It was switched between 0 and 1. Largeer steering angle (during sharp turns) means lesser throttle. I have tuned the value of multiplying factor so the speed is set within a safe limits in all possible turn angles.
